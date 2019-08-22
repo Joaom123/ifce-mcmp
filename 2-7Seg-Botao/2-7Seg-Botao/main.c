@@ -6,9 +6,12 @@
  */ 
 
 #include <avr/io.h>
-#define F_CPU 16000000L //16 MHz
-//#define F_CPU 1000000UL
-#include <util/delay.h>
+//#define F_CPU 16000000L //16 MHz
+//#include <util/delay.h>
+#include <avr/interrupt.h>
+
+
+#define BOTAO_ATIVADO (PIND & (1<<PIND7))
 
 #define ZERO 0x3F
 #define UM 0x06
@@ -23,54 +26,55 @@
 
 /**
 * Adiciona uma unidade no display 
-* Parâmetros: valorPorta: Valor que está exibido no display
-*			  *port: Ponteiro referência da porta do display
+* Parâmetros:	valorPorta: Valor que está exibido no display
+*				*port: Ponteiro referência da porta do display
 */
 void adicionaUnidade(uint8_t valorPorta, volatile uint8_t *port)
 {
-	_delay_ms(100);
 	switch(valorPorta)
 	{
 		case ZERO:
 			*port = UM;
 			break;
-		
 		case UM:
 			*port = DOIS;
 			break;
-		
 		case DOIS:
 			*port = TRES;
 			break;
-		
 		case TRES:
 			*port = QUATRO;
 			break;
-		
 		case QUATRO:
 			*port = CINCO;
 			break;
-		
 		case CINCO:
 			*port = SEIS;
 			break;
-			
 		case SEIS:
 			*port = SETE;
 			break;
-			
 		case SETE:
 			*port = OITO;
 			break;
-			
 		case OITO:
 			*port = NOVE;
 			break;
-			
 		case NOVE:
 			*port = ZERO;
-			adicionaUnidade(PORTB, &PORTB);
+			if(port == &PORTD)adicionaUnidade(PORTB, &PORTB);
 			break;
+	}
+}
+
+/*
+*
+*/
+ISR(PCINT2_vect)
+{
+	if (BOTAO_ATIVADO)
+	{
+		adicionaUnidade(PORTD, &PORTD);
 	}
 }
 
@@ -82,12 +86,14 @@ int main(void)
 	DDRB = 0xff;		//Todas as portas de B como output
 	PORTB = 0x3F;		//Todas as portas de B como 0
 	
+	PCMSK2 |= (1<<PCINT23);
+	PCICR |= (1<<PCIE2);
+	
+	sei();
+	
     while (1) 
     {
-		if(PIND & (1<<PIND7))
-		{
-			adicionaUnidade(PORTD, &PORTD);
-		}
+		
     }
 }
 
