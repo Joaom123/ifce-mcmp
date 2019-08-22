@@ -6,8 +6,8 @@
  */ 
 
 #include <avr/io.h>
-//#define F_CPU 16000000UL //16 MHz
-#define F_CPU 1000000UL
+#define F_CPU 16000000L //16 MHz
+//#define F_CPU 1000000UL
 #include <util/delay.h>
 
 #define ZERO 0x3F
@@ -21,11 +21,14 @@
 #define OITO 0x7F
 #define NOVE 0x67
 
-uint8_t listaNumeros[10] = {ZERO, UM, DOIS, TRES, QUATRO, CINCO, SEIS, SETE, OITO, NOVE};
-
+/**
+* Adiciona uma unidade no display 
+* Parâmetros: valorPorta: Valor que está exibido no display
+*			  *port: Ponteiro referência da porta do display
+*/
 void adicionaUnidade(uint8_t valorPorta, volatile uint8_t *port)
 {
-	_delay_ms(200);
+	_delay_ms(100);
 	switch(valorPorta)
 	{
 		case ZERO:
@@ -76,11 +79,8 @@ int main(void)
 	//Configuração das portas
 	DDRD = 0x7f;		//Todas as portas de D como output e 7D como input
 	PORTD = 0x3F;		//Todas as portas de D como 0
-		
 	DDRB = 0xff;		//Todas as portas de B como output
 	PORTB = 0x3F;		//Todas as portas de B como 0
-	
-	
 	
     while (1) 
     {
