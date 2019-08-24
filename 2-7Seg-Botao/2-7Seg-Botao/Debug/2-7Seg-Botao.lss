@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 00000662  00000000  00000000  0000098d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002b5  00000000  00000000  00000fef  2**0
+  7 .debug_line   000002c4  00000000  00000000  00000fef  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000008c  00000000  00000000  000012a4  2**2
+  8 .debug_frame  0000008c  00000000  00000000  000012b4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000384  00000000  00000000  00001330  2**0
+  9 .debug_str    00000384  00000000  00000000  00001340  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000203  00000000  00000000  000016b4  2**0
+ 10 .debug_loc    00000203  00000000  00000000  000016c4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000020  00000000  00000000  000018b7  2**0
+ 11 .debug_ranges 00000020  00000000  00000000  000018c7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -107,74 +107,74 @@ void adicionaUnidade(uint8_t valorPorta, volatile uint8_t *port)
   b4:	08 95       	ret
 	{
 		case ZERO:
-			*port = UM;
+		*port = UM;
   b6:	86 e0       	ldi	r24, 0x06	; 6
   b8:	fb 01       	movw	r30, r22
   ba:	80 83       	st	Z, r24
-			break;
+		break;
   bc:	08 95       	ret
 		case UM:
-			*port = DOIS;
+		*port = DOIS;
   be:	8b e5       	ldi	r24, 0x5B	; 91
   c0:	fb 01       	movw	r30, r22
   c2:	80 83       	st	Z, r24
-			break;
+		break;
   c4:	08 95       	ret
 		case DOIS:
-			*port = TRES;
+		*port = TRES;
   c6:	8f e4       	ldi	r24, 0x4F	; 79
   c8:	fb 01       	movw	r30, r22
   ca:	80 83       	st	Z, r24
-			break;
+		break;
   cc:	08 95       	ret
 		case TRES:
-			*port = QUATRO;
+		*port = QUATRO;
   ce:	86 e6       	ldi	r24, 0x66	; 102
   d0:	fb 01       	movw	r30, r22
   d2:	80 83       	st	Z, r24
-			break;
+		break;
   d4:	08 95       	ret
 		case QUATRO:
-			*port = CINCO;
+		*port = CINCO;
   d6:	8d e6       	ldi	r24, 0x6D	; 109
   d8:	fb 01       	movw	r30, r22
   da:	80 83       	st	Z, r24
-			break;
+		break;
   dc:	08 95       	ret
 		case CINCO:
-			*port = SEIS;
+		*port = SEIS;
   de:	8d e7       	ldi	r24, 0x7D	; 125
   e0:	fb 01       	movw	r30, r22
   e2:	80 83       	st	Z, r24
-			break;
+		break;
   e4:	08 95       	ret
 		case SEIS:
-			*port = SETE;
+		*port = SETE;
   e6:	87 e0       	ldi	r24, 0x07	; 7
   e8:	fb 01       	movw	r30, r22
   ea:	80 83       	st	Z, r24
-			break;
+		break;
   ec:	08 95       	ret
 		case SETE:
-			*port = OITO;
+		*port = OITO;
   ee:	8f e7       	ldi	r24, 0x7F	; 127
   f0:	fb 01       	movw	r30, r22
   f2:	80 83       	st	Z, r24
-			break;
+		break;
   f4:	08 95       	ret
 		case OITO:
-			*port = NOVE;
+		*port = NOVE;
   f6:	87 e6       	ldi	r24, 0x67	; 103
   f8:	fb 01       	movw	r30, r22
   fa:	80 83       	st	Z, r24
-			break;
+		break;
   fc:	08 95       	ret
 		case NOVE:
-			*port = ZERO;
+		*port = ZERO;
   fe:	8f e3       	ldi	r24, 0x3F	; 63
  100:	fb 01       	movw	r30, r22
  102:	80 83       	st	Z, r24
-			if(port == &PORTD)adicionaUnidade(PORTB, &PORTB);
+		if(port == &PORTD)adicionaUnidade(PORTB, &PORTB);
  104:	6b 32       	cpi	r22, 0x2B	; 43
  106:	71 05       	cpc	r23, r1
  108:	29 f4       	brne	.+10     	; 0x114 <adicionaUnidade+0x94>
