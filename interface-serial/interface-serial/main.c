@@ -12,8 +12,6 @@
 #include <util/delay.h>
 #define BAUD 4800
 #define BRC ((F_CPU/16/BAUD)-1)
-#define BOTAO_ATIVADOA !(PIND & (1<<PIND2))
-#define BOTAO_ATIVADOB !(PIND & (1<<PIND3))
 
 void enviaDado(char dado)
 {
@@ -23,14 +21,6 @@ void enviaDado(char dado)
 	PORTC |= (0x04);
 	_delay_ms(20);
 	PORTC &= ~(0x04);	
-}
-
-void enviaMensagem(char mensagem[])
-{
-	for (int i = 0; i < strlen(mensagem); i++)
-	{
-		enviaDado(mensagem[i]);
-	}
 }
 
 void enviaComando(char comando)
@@ -65,24 +55,19 @@ volatile char byteRecebido;
 ISR(USART_RX_vect)
 {
 	byteRecebido = UDR0;
-	//UDR0 = byteRecebido;
+	UDR0 = byteRecebido;
 	enviaDado(byteRecebido);
 }
 
-ISR(PCINT2_vect)
+ISR(INT0_vect)
 {
-	//enviaDado('A');
-	if(BOTAO_ATIVADOA){
-		enviaDado('A');
-		//PORTD2 = 0;
-	}
-	
-	if(BOTAO_ATIVADOB){ 
-		enviaDado('B');
-		//PORTD3 = 1;
-	}
+	enviaDado('A');
 }
 
+ISR(INT1_vect)
+{
+	enviaDado('B');
+}
 
 int main(void)
 {
@@ -92,12 +77,14 @@ int main(void)
 	DDRB = 0xff;
 	DDRC = 0x07;
 	PORTB = 0xff;
-	PCMSK2 |= (1<<PCINT18);
-	PCMSK2 |= (1<<PCINT19);
-	PCICR |= (1<<PCIE2);
+	
+	EICRA |= (1 << ISC01);
+	EIMSK |= (1 << INT0)|(1 << INT1);
+	
 	sei();
 	inicializa();
-    while (1) 
+    
+	while (1) 
     {
 		 
     }
