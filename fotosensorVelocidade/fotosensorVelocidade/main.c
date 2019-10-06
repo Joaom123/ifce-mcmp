@@ -38,15 +38,21 @@ void enviaComando(char comando)
 	PORTC &= ~(0x04);
 }
 
+void exibeMensagem(char mensagem[])
+{
+	for(int i = 0; i < strlen(mensagem); i++)
+	{
+		enviaDado(mensagem[i]);
+	}
+}
+
+
 //Exibe a velocidade no lcd
 void exibeVelocidade(int velocidade)
 {
 	char mensagem[3];
 	sprintf(mensagem, "%d", velocidade);
-	for(int i = 0; i < strlen(mensagem); i++)
-	{
-		enviaDado(mensagem[i]);
-	}
+	exibeMensagem(mensagem);
 }
 
 void inicializa()
@@ -84,7 +90,7 @@ ISR(INT1_vect)
 {
 	int velocidade = calculaVelocidade(3, contador);
 	exibeVelocidade(velocidade);
-	
+	exibeMensagem("km/h");
 }
 
 //Conta a cada x ms
