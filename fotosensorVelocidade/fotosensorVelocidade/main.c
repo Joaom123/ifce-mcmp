@@ -6,11 +6,8 @@
  */ 
 
 #ifndef F_CPU
-#define F_CPU 8000000UL
+#define F_CPU 1000000
 #endif
-#define FOSC 16000000
-#define BAUD 28800
-#define BRC FOSC/16/BAUD-1
 
 #include <util/delay.h>
 #include <avr/io.h>
@@ -72,7 +69,7 @@ int calculaVelocidade(int distancia, int variacaoDeTempo)
 }
 
 
-//TODO
+//TODO: calcular distancia entre os sensores
 int calculaDistancia()
 {
 	return 0;

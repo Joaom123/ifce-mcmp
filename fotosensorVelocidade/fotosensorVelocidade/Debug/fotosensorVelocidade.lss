@@ -25,9 +25,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  10 .debug_str    00000494  00000000  00000000  00002388  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000004f0  00000000  00000000  0000281c  2**0
+ 11 .debug_loc    000004ec  00000000  00000000  0000281c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000060  00000000  00000000  00002d0c  2**0
+ 12 .debug_ranges 00000060  00000000  00000000  00002d08  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -102,7 +102,7 @@ Disassembly of section .text:
 
 000000a6 <enviaDado>:
 
-//TODO
+//TODO: calcular distancia entre os sensores
 int calculaDistancia()
 {
 	return 0;
@@ -111,8 +111,8 @@ int calculaDistancia()
   a8:	40 9a       	sbi	0x08, 0	; 8
   aa:	41 98       	cbi	0x08, 1	; 8
   ac:	42 9a       	sbi	0x08, 2	; 8
-  ae:	8f e3       	ldi	r24, 0x3F	; 63
-  b0:	9c e9       	ldi	r25, 0x9C	; 156
+  ae:	87 e8       	ldi	r24, 0x87	; 135
+  b0:	93 e1       	ldi	r25, 0x13	; 19
   b2:	01 97       	sbiw	r24, 0x01	; 1
   b4:	f1 f7       	brne	.-4      	; 0xb2 <enviaDado+0xc>
   b6:	00 c0       	rjmp	.+0      	; 0xb8 <enviaDado+0x12>
@@ -125,8 +125,8 @@ int calculaDistancia()
   c0:	40 98       	cbi	0x08, 0	; 8
   c2:	41 98       	cbi	0x08, 1	; 8
   c4:	42 9a       	sbi	0x08, 2	; 8
-  c6:	8f e1       	ldi	r24, 0x1F	; 31
-  c8:	9e e4       	ldi	r25, 0x4E	; 78
+  c6:	83 ec       	ldi	r24, 0xC3	; 195
+  c8:	99 e0       	ldi	r25, 0x09	; 9
   ca:	01 97       	sbiw	r24, 0x01	; 1
   cc:	f1 f7       	brne	.-4      	; 0xca <enviaComando+0xc>
   ce:	00 c0       	rjmp	.+0      	; 0xd0 <enviaComando+0x12>
