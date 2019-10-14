@@ -5,9 +5,9 @@
  * Author : João Marcus | Elysson | Paulo Ricardo | Nivardo
  */ 
 
-#define F_CPU 16000000
+#define F_CPU 8000000
 #define BAUD 28800
-#define BRC F_CPU/16/BAUD-1
+#define BRC F_CPU/8/BAUD-1
 #define TX_BUFFER_SIZE 128
 
 #include <util/delay.h>
@@ -17,9 +17,9 @@
 #include <stdio.h>
 
 //Variáveis
-unsigned int contador; //Distância entre os sensores em metros
-unsigned int distancia;//Tempo em milissegundos
-volatile char byteRecebido;
+unsigned int contador = 0;		//Distância entre os sensores em metros
+unsigned int distancia = 0;		//Tempo em milissegundos
+volatile char byteRecebido;		//Valor recebido pela serial
 char serialBuffer[TX_BUFFER_SIZE];
 uint8_t serialReadPos = 0;
 uint8_t serialWritePos = 0;
@@ -63,6 +63,7 @@ void exibeMensagem(char mensagem[])
 	for(int i = 0; i < strlen(mensagem); i++) enviaDado(mensagem[i]);
 }
 
+//Inicializar a serial
 void USART_init(unsigned int ubrr)
 {
 	UBRR0H = (unsigned char)(ubrr>>8);
@@ -100,12 +101,6 @@ int calculaVelocidade(int distancia, int variacaoDeTempo)
 	return velocidade; //Velocidade em km/h
 }
 
-//TODO: calcular distancia entre os sensores
-int calculaDistancia()
-{
-	return 0;
-}
-
 ISR(INT0_vect)
 {
 	contador = 0;
@@ -113,9 +108,14 @@ ISR(INT0_vect)
 
 ISR(INT1_vect)
 {
-	int velocidade = calculaVelocidade(distancia, contador);
-	exibeVelocidade(velocidade);
-	exibeMensagem("km/h");
+	if (distancia){
+		int velocidade = calculaVelocidade(distancia, contador);
+		exibeVelocidade(velocidade);
+		exibeMensagem("km/h");
+	}else{
+		serialWrite("Distância não selecionada! \n\r");
+	}
+	
 }
 
 ISR(USART_TX_vect)
@@ -133,8 +133,8 @@ ISR(USART_TX_vect)
 	}
 }
 
-//Conta a cada x ms
-ISR(TIMER0_OVF_vect)
+//Conta a cada 1 ms
+ISR(TIMER0_COMPA_vect)
 {
 	contador++;
 }
@@ -142,9 +142,7 @@ ISR(TIMER0_OVF_vect)
 ISR(USART_RX_vect)
 {
 	byteRecebido = UDR0;
-	//enviaDado(byteRecebido);
 	if(byteRecebido < 54 && byteRecebido > 50){
-		//enviaDado(byteRecebido);
 		distancia = (unsigned int)(byteRecebido - '0');
 		char mensagemASerExibida[50];
 		sprintf(mensagemASerExibida, "Distancia selecionada: %d metros\n\r", distancia);
@@ -166,14 +164,15 @@ int main(void)
 	EICRA |= (1 << ISC01);		//Ativa registrador interrupção externa
 	EIMSK |= (1 << INT0)|(1 << INT1);		//Ativa interrupção de int0 e int1
 	
-	TIMSK0 |= (1 << TOIE0); //Ativa timer overflow interrupt
-	
+	TCCR0A |= (1 << WGM01);			//Modo CTC
+	OCR0A = 0x7d;	//Dispara em 125
+	TIMSK0 |= (1 << OCIE0A);
+	TCCR0B |= (1 << CS01) | (1 << CS00);		// Prescaler para 64
+		
 	sei();
 	
 	inicializa();
-	
-	TCCR0B |= (1 << CS02);		//Prescaler 256
-	
+		
 	_delay_ms(200);
 	serialWrite("Digite o tamanho da distância em metros:\n\r");
 

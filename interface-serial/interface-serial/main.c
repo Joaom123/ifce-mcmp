@@ -45,24 +45,24 @@ void inicializa()
 	enviaComando(0x01);
 }
 
-void USART_init(unsigned int ubrr)
+/*void USART_init(unsigned int ubrr)
 {	
 	UBRR0H = (unsigned char)(ubrr>>8);
 	UBRR0L = (unsigned char)ubrr;
 	UCSR0A |= (1 << U2X0);
 	UCSR0B |= (1 << RXEN0)|(1 << TXEN0);
 	UCSR0B |= (1 << RXCIE0);
-	UCSR0C = 0x2C; //7-bits paridade:par stopbit:2
-}
+	UCSR0C = 0x2C;	//	7-bits paridade:par stopbit:2
+}*/
 
-volatile char byteRecebido;
+//volatile char byteRecebido;
 
-ISR(USART_RX_vect)
+/*ISR(USART_RX_vect)
 {
 	byteRecebido = UDR0;
-	//UDR0 = byteRecebido;
+	UDR0 = byteRecebido;
 	enviaDado(byteRecebido);
-}
+}*/
 
 ISR(INT0_vect)
 {
@@ -89,7 +89,7 @@ int main(void)
 	sei();
 	inicializa();
     
-	while (1) 
+    while (1) 
     {
 		 
     }
