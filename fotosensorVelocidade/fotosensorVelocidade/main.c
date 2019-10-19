@@ -16,7 +16,9 @@
 #include <string.h>
 #include <stdio.h>
 
+
 //Variáveis
+int flag = 0;
 unsigned int contador = 0;		//Distância entre os sensores em metros
 unsigned int distancia = 0;		//Tempo em milissegundos
 volatile char byteRecebido;		//Valor recebido pela serial
@@ -88,7 +90,7 @@ void exibeVelocidade(int velocidade)
 void inicializa()
 {
 	enviaComando(0x38);
-	enviaComando(0x0E);
+	enviaComando(0x0C);
 	enviaComando(0x06);
 	enviaComando(0x01);
 }
@@ -110,17 +112,18 @@ ISR(INT1_vect)
 {
 	if (distancia){
 		int velocidade = calculaVelocidade(distancia, contador);
+		enviaComando(0x81);
 		exibeVelocidade(velocidade);
-		exibeMensagem("km/h");
-	}else{
-		serialWrite("Distância não selecionada! \n\r");
+		exibeMensagem("km/h   ");
+	}else if (flag){
+		serialWrite("Distância não selecionada! \nDigite o tamanho da distância em metros:\n\r");
+
 	}
 	
 }
 
 ISR(USART_TX_vect)
 {
-	//UDR0 = byteRecebido;
 	if(serialReadPos != serialWritePos)
 	{
 		UDR0 = serialBuffer[serialReadPos];
@@ -175,10 +178,10 @@ int main(void)
 		
 	_delay_ms(200);
 	serialWrite("Digite o tamanho da distância em metros:\n\r");
+	flag = 1;
 
     while (1) 
     {
 		
     }
 }
-
