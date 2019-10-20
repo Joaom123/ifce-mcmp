@@ -44,15 +44,43 @@ void enviaPulsos(int variacaoDeTempo)
 	criaPulso(1); //Pulso na porta B1
 }
 
+/*
+*
+*/
+void enviaDistancia(int distancia)
+{
+	if(distancia == 5){
+		PORTB |= (1 << PORTB4);
+		PORTB |= (1 << PORTB5);
+		return ;
+	} else if (distancia == 4){
+		PORTB &= ~(1 << PORTB4);
+		PORTB |= (1 << PORTB5);
+		return ;
+	} else if(distancia == 3){
+		PORTB |= (1 << PORTB4);
+		PORTB &= ~(1 << PORTB5);
+		return ;
+	} else {
+		PORTB &= ~(1 << PORTB4);
+		PORTB &= ~(1 << PORTB5);
+		return ;	
+	}
+}
+
+void enviaPulsosEDistancia(int distacia, int velocidade)
+{
+	enviaPulsos(calculaTempo(distacia, velocidade));
+	enviaDistancia(distacia);
+	delay_ms(1000);
+}
+
 ISR(INT0_vect)
 {
-	enviaPulsos(calculaTempo(5, 50));
-	delay_ms(1000);
-	enviaPulsos(calculaTempo(5, 100));
-	delay_ms(1000);
-	enviaPulsos(calculaTempo(5, 65));
-	delay_ms(1000);
-	enviaPulsos(calculaTempo(5, 120));
+	enviaPulsosEDistancia(4,50);
+	enviaPulsosEDistancia(5,99);
+	enviaPulsosEDistancia(3,20);
+	enviaPulsosEDistancia(4,56);
 }
 
 int main(void)
@@ -61,7 +89,7 @@ int main(void)
 	PORTB = 0x00;
 	
 	DDRD = 0x00;
-	PORTD = 0x0c;
+	PORTD = 0x00;
 	
 	EICRA |= (1 << ISC01);		//Ativa registrador interrupção externa
 	EIMSK |= (1 << INT0);		//Ativa interrupção de int0

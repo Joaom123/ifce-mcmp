@@ -108,8 +108,30 @@ ISR(INT0_vect)
 	contador = 0;
 }
 
+void recebeDistanciaDaPortD()
+{
+	if ((PIND & (1<<PIND4))){
+		if ((PIND & (1<<PIND5))){
+			distancia = 5;
+			return ;
+		}else{
+			distancia = 3;
+			return ;
+		}
+	}else{
+		if ((PIND & (1<<PIND5))){
+			distancia = 4;
+			return ;
+		}else{
+			distancia = 0;
+			return ;
+		}
+	}
+}
+
 ISR(INT1_vect)
 {
+	 recebeDistanciaDaPortD();
 	if (distancia){
 		int velocidade = calculaVelocidade(distancia, contador);
 		enviaComando(0x81);
@@ -158,11 +180,11 @@ ISR(USART_RX_vect)
 int main(void)
 {
 	DDRD = 0x00;
-	PORTD = 0x0c;
+	PORTD = 0x00;
 	USART_init(BRC);
 	DDRB = 0xff;
-	DDRC = 0x07;
 	PORTB = 0xff;
+	DDRC = 0x07;
 	
 	EICRA |= (1 << ISC01);		//Ativa registrador interrupção externa
 	EIMSK |= (1 << INT0)|(1 << INT1);		//Ativa interrupção de int0 e int1
@@ -176,12 +198,16 @@ int main(void)
 	
 	inicializa();
 		
-	_delay_ms(200);
+	_delay_ms(100);
 	serialWrite("Digite o tamanho da distância em metros:\n\r");
 	flag = 1;
 
     while (1) 
     {
-		
+		//Debugger da distancia
+		/*_delay_ms(100);
+		char mensagemASerExibida1[50];
+		sprintf(mensagemASerExibida1, "Distancia selecionada: %d metros\n\r", distancia);
+		serialWrite(mensagemASerExibida1);*/
     }
 }
